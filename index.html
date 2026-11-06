@@ -84,8 +84,8 @@
   .bg span:nth-child(1){width:520px;height:520px;background:var(--accent-2);top:-180px;left:-160px}
   .bg span:nth-child(2){width:420px;height:420px;background:var(--accent);bottom:-160px;right:-140px;opacity:.35;animation-delay:-8s}
   .bg span:nth-child(3){width:300px;height:300px;background:#B9D8DC;top:40%;left:60%;opacity:.3;animation-delay:-14s}
-  .bg span{opacity:.18} .bg span:nth-child(3){background:#2A5560} 
-  @media (prefers-color-scheme:dark){ :root:not([data-theme=light]) .bg span:nth-child(3){background:#2A5560} }
+  :root[data-theme=dark] .bg span{opacity:.18} :root[data-theme=dark] .bg span:nth-child(3){background:#2A5560} 
+  @media (prefers-color-scheme:dark){ :root:not([data-theme=light]) .bg span:nth-child(3){background:#2A5560} :root:not([data-theme=light]) .bg span{opacity:.18} }
   @keyframes float{
     0%{transform:translate(0,0) scale(1)}
     50%{transform:translate(60px,40px) scale(1.08)}
@@ -225,6 +225,30 @@
 
   footer{text-align:center;color:var(--faint);font-size:.85rem;padding:0 20px 40px}
 
+/* Theme Toggle */
+  .theme-toggle{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 46px;
+    height: 46px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    z-index:60;
+    font-size:1.2rem;
+    color:var(--text);
+    background:var(--surface);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-hover);
+    transition:transform .3s var(--ease);
+  }
+
+   .theme-toggle:hover{
+      transform:rotate(20deg);
+    }
+
   /* Responsive */
   @media (max-width:860px){
     .layout{grid-template-columns:1fr;gap:0}
@@ -333,6 +357,7 @@
   <footer>© 2026 Kataluma</footer>
 
   <button class="to-top" id="toTop" aria-label="Επιστροφή στην κορυφή">↑</button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Εναλλαγή φωτεινής/σκοτεινής λειτουργίας">🌓</button>
   <div class="toast" id="toast" role="status">Αντιγράφηκε!</div>
 
 <script>
@@ -371,6 +396,29 @@
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 1600);
   });
+
+
+  const themeToggle = document.getElementById('themeToggle');
+  const currentTheme = localStorage.getItem('theme');
+  themeToggle.addEventListener('click', () => {
+    const attr = document.documentElement.getAttribute('data-theme');
+    const isDark = attr ? attr === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const newTheme = isDark ? 'light' : 'dark';
+    setTheme(newTheme);
+  });
+  const setTheme = (theme) => {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.removeItem('theme');
+    }
+  }
+  setTheme(currentTheme);
 </script>
 </body>
 </html>
